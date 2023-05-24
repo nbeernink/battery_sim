@@ -31,6 +31,7 @@ from .const import (
     CONF_IMPORT_SENSOR,
     CONF_SECOND_IMPORT_SENSOR,
     CONF_EXPORT_SENSOR,
+    CONF_SECOND_EXPORT_SENSOR,
     DOMAIN,
     BATTERY_PLATFORMS,
     OVERIDE_CHARGING,
@@ -139,9 +140,13 @@ class SimulatedBatteryHandle():
         self._import_sensor_id = config[CONF_IMPORT_SENSOR]
         self._export_sensor_id = config[CONF_EXPORT_SENSOR]
         self._second_import_sensor_id = None
+        self._second_export_sensor_id = None
         if (CONF_SECOND_IMPORT_SENSOR in config and
             len(config[CONF_SECOND_IMPORT_SENSOR]) > 6):
             self._second_import_sensor_id = config[CONF_SECOND_IMPORT_SENSOR]
+        if (CONF_SECOND_EXPORT_SENSOR in config and
+            len(config[CONF_SECOND_EXPORT_SENSOR]) > 6):
+            self._second_export_sensor_id = config[CONF_SECOND_EXPORT_SENSOR]
         """Defalt to sensor entites for backwards compatibility"""
         self._tariff_type = TARIFF_SENSOR_ENTITIES
         if TARIFF_TYPE in config:
@@ -159,6 +164,7 @@ class SimulatedBatteryHandle():
         self._collecting1 = None
         self._collecting2 = None
         self._collecting3 = None
+        self._collecting4 = None
         self._charging = False
         self._name = config[CONF_NAME]
         self._battery_size = config[CONF_BATTERY_SIZE]
@@ -256,6 +262,11 @@ class SimulatedBatteryHandle():
             self._hass, [self._export_sensor_id], self.async_export_reading
         )
         _LOGGER.debug("<%s> monitoring %s", self._name, self._export_sensor_id)
+        if self._second_export_sensor_id != None:
+            self._collecting4 = async_track_state_change_event(
+                self._hass, [self._second_export_sensor_id], self.async_import_reading
+            )
+        _LOGGER.debug("<%s> monitoring %s", self._name, self._second_export_sensor_id)
 
     @callback
     def async_export_reading(self, event):

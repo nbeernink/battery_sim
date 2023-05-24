@@ -18,6 +18,7 @@ from .const import (
     CONF_IMPORT_SENSOR,
     CONF_SECOND_IMPORT_SENSOR,
     CONF_EXPORT_SENSOR,
+    CONF_SECOND_EXPORT_SENSOR,
     CONF_ENERGY_IMPORT_TARIFF,
     CONF_ENERGY_EXPORT_TARIFF,
     SETUP_TYPE,
@@ -25,6 +26,7 @@ from .const import (
     METER_TYPE,
     ONE_IMPORT_ONE_EXPORT_METER,
     TWO_IMPORT_ONE_EXPORT_METER,
+    TWO_IMPORT_TWO_EXPORT_METER,
     TARIFF_TYPE,
     NO_TARIFF_INFO, 
     TARIFF_SENSOR_ENTITIES,
@@ -89,7 +91,7 @@ class ExampleConfigFlow(config_entries.ConfigFlow, domain=DOMAIN):
             self._data[TARIFF_TYPE] = user_input[TARIFF_TYPE]
             return await self.async_step_connectsensors()
 
-        meter_types = [ONE_IMPORT_ONE_EXPORT_METER, TWO_IMPORT_ONE_EXPORT_METER]
+        meter_types = [ONE_IMPORT_ONE_EXPORT_METER, TWO_IMPORT_ONE_EXPORT_METER, TWO_IMPORT_TWO_EXPORT_METER]
         tariff_types = [NO_TARIFF_INFO, FIXED_NUMERICAL_TARIFFS, TARIFF_SENSOR_ENTITIES]
 
         return self.async_show_form(
@@ -106,6 +108,9 @@ class ExampleConfigFlow(config_entries.ConfigFlow, domain=DOMAIN):
             self._data[CONF_EXPORT_SENSOR] = user_input[CONF_EXPORT_SENSOR]
             if self._data[METER_TYPE] == TWO_IMPORT_ONE_EXPORT_METER:
                 self._data[CONF_SECOND_IMPORT_SENSOR] = user_input[CONF_SECOND_IMPORT_SENSOR]
+            if self._data[METER_TYPE] == TWO_IMPORT_TWO_EXPORT_METER:
+                self._data[CONF_SECOND_IMPORT_SENSOR] = user_input[CONF_SECOND_IMPORT_SENSOR]
+                self._data[CONF_SECOND_EXPORT_SENSOR] = user_input[CONF_SECOND_EXPORT_SENSOR]
             if self._data[TARIFF_TYPE] == NO_TARIFF_INFO:
                 return self.async_create_entry(title=self._data["name"], data=self._data)
             else:
@@ -121,6 +126,13 @@ class ExampleConfigFlow(config_entries.ConfigFlow, domain=DOMAIN):
                 vol.Required(CONF_IMPORT_SENSOR): EntitySelector(EntitySelectorConfig(device_class = SensorDeviceClass.ENERGY)),
                 vol.Required(CONF_SECOND_IMPORT_SENSOR): EntitySelector(EntitySelectorConfig(device_class = SensorDeviceClass.ENERGY)),
                 vol.Required(CONF_EXPORT_SENSOR): EntitySelector(EntitySelectorConfig(device_class = SensorDeviceClass.ENERGY))
+            }
+        elif self._data[METER_TYPE] == TWO_IMPORT_TWO_EXPORT_METER:
+            schema ={
+                vol.Required(CONF_IMPORT_SENSOR): EntitySelector(EntitySelectorConfig(device_class = SensorDeviceClass.ENERGY)),
+                vol.Required(CONF_SECOND_IMPORT_SENSOR): EntitySelector(EntitySelectorConfig(device_class = SensorDeviceClass.ENERGY)),
+                vol.Required(CONF_EXPORT_SENSOR): EntitySelector(EntitySelectorConfig(device_class = SensorDeviceClass.ENERGY)),
+                vol.Required(CONF_SECOND_EXPORT_SENSOR): EntitySelector(EntitySelectorConfig(device_class = SensorDeviceClass.ENERGY))
             }
 
         return self.async_show_form(step_id="connectsensors", data_schema=vol.Schema(schema))

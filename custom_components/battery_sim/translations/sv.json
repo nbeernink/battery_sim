@@ -29,7 +29,8 @@
                 "title": "Energy meter type",
                 "data":{
                     "one_import_one_export" : "One import and one export meter",
-                    "two_import_one_export" : "Two import and one export meter"
+                    "two_import_one_export" : "Two import and one export meter",
+                    "two_import_two_export" : "Two import and two export meter"
                 },
                 "description": "Select the type of energy meter you have. Import meters measure energy coming into your home from the grid. You may have two of these e.g. one for day time and one for night. Export meters measure energy leaving your house to the grid e.g. excess solar generation."
             },
@@ -38,7 +39,8 @@
                 "data":{
                     "import_sensor": "Importera senor/mätare - inkommande energi",
                     "second_import_sensor": "Second import sensor/meter - e.g. night time or Economy 7",
-                    "export_sensor" : "Exportera sensor/mätare - producering till elnätet"
+                    "export_sensor" : "Exportera sensor/mätare - producering till elnätet",
+                    "second_export_sensor" : "Second Exportera sensor/mätare - producering till elnätet"
                 },
                 "description": "När exportsensorn visar energi som lämnar huset laddas batteriet. När importsensorn visar energi som kommer in i huset från nätet laddas batteriet ur."
             },
